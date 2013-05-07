@@ -45,8 +45,8 @@ static NSString *const keyPath = @"contentOffset";
 #pragma mark - Set Value
 
 - (void)setDelegateHeader:(id<MCHeadTableViewDelegate>)delegateHeader {
-    self.tableviewContent.dataSource = (id<UITableViewDataSource>)delegateHeader;
-    self.tableviewContent.delegate = (id<UITableViewDelegate>)delegateHeader;
+//    self.tableviewContent.dataSource = (id<UITableViewDataSource>)delegateHeader;
+//    self.tableviewContent.delegate = (id<UITableViewDelegate>)delegateHeader;
     _delegateHeader = delegateHeader;
 }
 

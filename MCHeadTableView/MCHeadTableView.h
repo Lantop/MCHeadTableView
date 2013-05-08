@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 @class MCHeadTableView;
+@class MCContentTableView;
 
 @protocol MCHeadTableViewDelegate <NSObject>
 
@@ -15,11 +16,17 @@
 
 - (UIView*)MCHeadTableViewSectionView;
 
+- (MCContentTableView*)MCHeadTableViewFooterView;
+
 @end
 
 @interface MCHeadTableView : UITableView <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, weak) id <MCHeadTableViewDelegate> delegateHeader;
+
+- (void)MCScrollViewDidEndDragging:(UIScrollView*)scrollView willDecelerate:(BOOL)decelerate;
+
+- (void)MCScrollViewDidEndDecelerating:(UIScrollView*)scrollView;
 
 @end
 

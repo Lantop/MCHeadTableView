@@ -10,6 +10,7 @@
 		F950C2F31737891C00E2770C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F950C2F21737891C00E2770C /* Foundation.framework */; };
 		F950C2F81737891C00E2770C /* MCHeadTableView.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F950C2F71737891C00E2770C /* MCHeadTableView.h */; };
 		F950C2FA1737891C00E2770C /* MCHeadTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = F950C2F91737891C00E2770C /* MCHeadTableView.m */; };
+		F9CB0E9A1739E6DD00F98EF6 /* MCContentTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = F9CB0E991739E6DD00F98EF6 /* MCContentTableView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -31,6 +32,8 @@
 		F950C2F61737891C00E2770C /* MCHeadTableView-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MCHeadTableView-Prefix.pch"; sourceTree = "<group>"; };
 		F950C2F71737891C00E2770C /* MCHeadTableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MCHeadTableView.h; sourceTree = "<group>"; };
 		F950C2F91737891C00E2770C /* MCHeadTableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MCHeadTableView.m; sourceTree = "<group>"; };
+		F9CB0E981739E6DD00F98EF6 /* MCContentTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MCContentTableView.h; sourceTree = "<group>"; };
+		F9CB0E991739E6DD00F98EF6 /* MCContentTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MCContentTableView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +76,8 @@
 		F950C2F41737891C00E2770C /* MCHeadTableView */ = {
 			isa = PBXGroup;
 			children = (
+				F9CB0E981739E6DD00F98EF6 /* MCContentTableView.h */,
+				F9CB0E991739E6DD00F98EF6 /* MCContentTableView.m */,
 				F950C2F71737891C00E2770C /* MCHeadTableView.h */,
 				F950C2F91737891C00E2770C /* MCHeadTableView.m */,
 				F950C2F51737891C00E2770C /* Supporting Files */,
@@ -140,6 +145,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F950C2FA1737891C00E2770C /* MCHeadTableView.m in Sources */,
+				F9CB0E9A1739E6DD00F98EF6 /* MCContentTableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -242,6 +248,7 @@
 				F950C2FF1737891C00E2770C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

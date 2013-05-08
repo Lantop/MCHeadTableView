@@ -7,15 +7,17 @@
 //
 
 #import "MCHeadTableView.h"
+#import "MCContentTableView.h"
 
-static NSString *const keyPath = @"contentOffset";
+#define threshold 20
 
 @interface MCHeadTableView ()
 
 @property (nonatomic, strong) tableHeaderView *tableHeader;
 @property (nonatomic, strong) UIView *tableSection;
-@property (nonatomic, strong) UITableView *tableviewContent;
+@property (nonatomic, strong) MCContentTableView *tableviewContent;
 @property (nonatomic, assign) CGFloat headerHeight;
+@property (nonatomic, assign) BOOL direction;
 
 @end
 
@@ -31,22 +33,24 @@ static NSString *const keyPath = @"contentOffset";
     return _tableHeader;
 }
 
-- (UITableView*)tableviewContent {
+- (MCContentTableView*)tableviewContent {
     if (!_tableviewContent) {
-        _tableviewContent = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-        _tableviewContent.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        [_tableviewContent addObserver:self forKeyPath:keyPath
-                               options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld)
-                               context:NULL];
+        _tableviewContent = [[MCContentTableView alloc] initWithFrame:CGRectZero withContainerView:self];
+        
     }
     return _tableviewContent;
+}
+
+- (void)reloadData {
+    if ([self.delegateHeader respondsToSelector:@selector(MCHeadTableViewFooterView)]) {
+        MCContentTableView *view = [self.delegateHeader MCHeadTableViewFooterView];
+        self.tableviewContent = view;
+    }
 }
 
 #pragma mark - Set Value
 
 - (void)setDelegateHeader:(id<MCHeadTableViewDelegate>)delegateHeader {
-//    self.tableviewContent.dataSource = (id<UITableViewDataSource>)delegateHeader;
-//    self.tableviewContent.delegate = (id<UITableViewDelegate>)delegateHeader;
     _delegateHeader = delegateHeader;
 }
 
@@ -59,10 +63,6 @@ static NSString *const keyPath = @"contentOffset";
         self.headerHeight = 80.f;
     }
     return self;
-}
-
-- (void)dealloc {
-    [self.tableviewContent removeObserver:self forKeyPath:keyPath];
 }
 
 #pragma mark - UIView
@@ -117,6 +117,32 @@ static NSString *const keyPath = @"contentOffset";
     }
 }
 
+#pragma mark - Actions Public
+
+- (void)MCScrollViewDidEndDragging:(UIScrollView*)scrollView willDecelerate:(BOOL)decelerate
+{
+    if(!decelerate)
+    {
+        if(self.contentOffset.y < threshold)
+            [self setContentOffset:CGPointMake(0, 0) animated:YES];
+        else if(self.contentOffset.y > self.headerHeight-threshold)
+            [self setContentOffset:CGPointMake(0, self.headerHeight) animated:YES];
+        else if(self.direction)
+            [self setContentOffset:CGPointMake(0, self.headerHeight) animated:YES];
+        else
+            [self setContentOffset:CGPointMake(0, 0) animated:YES];
+    }
+}
+
+- (void)MCScrollViewDidEndDecelerating:(UIScrollView*)scrollView
+{
+    if(self.direction || self.contentOffset.y == self.headerHeight)
+        [self setContentOffset:CGPointMake(0, self.headerHeight) animated:YES];
+    else
+        [self setContentOffset:CGPointMake(0, 0) animated:YES];
+}
+
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -144,6 +170,7 @@ static NSString *const keyPath = @"contentOffset";
         sectionHeight = self.tableSection.frame.size.height;
         self.tableviewContent.frame = CGRectMake(0.f, 0.f, self.bounds.size.width, self.bounds.size.height-sectionHeight);
     }
+    [self reloadData];
     return sectionHeight;
 }
 

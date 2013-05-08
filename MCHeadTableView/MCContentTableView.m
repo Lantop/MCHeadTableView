@@ -1,182 +1,54 @@
-#import "MCHeadTableView.h"
+//
+//  MCContentTableView.m
+//  MCemo
+//  
+//  Created by Vic Zhou on 5/8/13.
+//  Copyright (c) 2013 Vic Zhou. All rights reserved.
+//
+
 #import "MCContentTableView.h"
+#import "MCHeadTableView.h"
 
-#define threshold 20
+static NSString *const keyPath = @"contentOffset";
 
-@interface MCHeadTableView ()
+@interface MCContentTableView ()
 
-@property (nonatomic, strong) tableHeaderView *tableHeader;
-@property (nonatomic, strong) UIView *tableSection;
-@property (nonatomic, strong) MCContentTableView *tableviewContent;
-@property (nonatomic, assign) CGFloat headerHeight;
-@property (nonatomic, assign) BOOL direction;
+@property (nonatomic, strong) MCHeadTableView *containerView;
 
 @end
 
-@implementation MCHeadTableView
+@implementation MCContentTableView
 
-#pragma mark Value
-
-- (tableHeaderView*)tableHeader {
-    if (!_tableHeader) {
-        _tableHeader = [[tableHeaderView alloc] initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width, self.headerHeight)];
-        _tableHeader.contentTableView = self.tableviewContent;
-    }
-    return _tableHeader;
-}
-
-- (MCContentTableView*)tableviewContent {
-    if (!_tableviewContent) {
-        _tableviewContent = [[MCContentTableView alloc] initWithFrame:CGRectZero withContainerView:self];
-        
-    }
-    return _tableviewContent;
-}
-
-- (void)reloadData {
-    if ([self.delegateHeader respondsToSelector:@selector(MCHeadTableViewFooterView)]) {
-        MCContentTableView *view = [self.delegateHeader MCHeadTableViewFooterView];
-        self.tableviewContent = view;
-    }
-}
-
-#pragma mark - Set Value
-
-- (void)setDelegateHeader:(id<MCHeadTableViewDelegate>)delegateHeader {
-    _delegateHeader = delegateHeader;
-}
-
-#pragma mark - NSObject
-
-- (id)initWithFrame:(CGRect)frame
+- (id)initWithFrame:(CGRect)frame withContainerView:(UIView*)containerView
 {
     self = [super initWithFrame:frame];
     if (self) {
-        self.headerHeight = 80.f;
+        self.containerView = (MCHeadTableView*)containerView;
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        [self addObserver:self.containerView forKeyPath:keyPath
+                               options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld)
+                               context:NULL];
     }
     return self;
 }
 
-#pragma mark - UIView
-
-- (void)drawRect:(CGRect)rect {
-    [super drawRect:rect];
-    //set the header view
-    if ([self.delegateHeader respondsToSelector:@selector(MCHeadTableViewHeaderView)]) {
-        UIView *view = [self.delegateHeader MCHeadTableViewHeaderView];
-        self.headerHeight = view.frame.size.height;
-        [self.tableHeader addSubview:view];
-    }
-    self.tableHeaderView = self.tableHeader;
-    self.tableFooterView = self.tableviewContent;
-    self.dataSource = self;
-    self.delegate = self;
-    self.scrollEnabled = NO;
+- (void)dealloc {
+    [self removeObserver:self forKeyPath:keyPath ];
 }
 
-#pragma mark - Actions Private
+/*********** add the method below to your contentview *******************
+#pragma mark - UIScrollViewDelegate
 
-- (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
+- (void)scrollViewDidEndDragging:(UIScrollView*)scrollView willDecelerate:(BOOL)decelerate
 {
-    CGPoint newPoint = [[change valueForKey:NSKeyValueChangeNewKey] CGPointValue];
-    
-    if(self.contentOffset.y < self.headerHeight)
-    {
-        if(newPoint.y > 0)
-        {
-            if(self.tableviewContent.contentOffset.y != 0)
-                [self.tableviewContent setContentOffset:CGPointMake(0, 0)];
-            
-            if(self.contentOffset.y+newPoint.y < self.headerHeight)
-                [self setContentOffset:CGPointMake(0, self.contentOffset.y+newPoint.y)];
-            else
-                [self setContentOffset:CGPointMake(0, self.headerHeight)];
-        }
-    }
-    
-    if(self.contentOffset.y <= self.headerHeight && self.tableviewContent.contentOffset.y < 0)
-    {
-        if(self.contentOffset.y > 0)
-        {
-            if(self.tableviewContent.contentOffset.y != 0)
-                [self.tableviewContent setContentOffset:CGPointMake(0, 0)];
-            
-            if(self.contentOffset.y+newPoint.y > 0)
-                [self setContentOffset:CGPointMake(0, self.contentOffset.y+newPoint.y)];
-            else
-                [self setContentOffset:CGPointMake(0, 0)];
-        }
-    }
+    [self.containerView MCScrollViewDidEndDragging:scrollView willDecelerate:decelerate];
 }
 
-#pragma mark - Actions Public
-
-- (void)MCScrollViewDidEndDragging:(UIScrollView*)scrollView willDecelerate:(BOOL)decelerate
+- (void)scrollViewDidEndDecelerating:(UIScrollView*)scrollView
 {
-    if(!decelerate)
-    {
-        if(self.contentOffset.y < threshold)
-            [self setContentOffset:CGPointMake(0, 0) animated:YES];
-        else if(self.contentOffset.y > self.headerHeight-threshold)
-            [self setContentOffset:CGPointMake(0, self.headerHeight) animated:YES];
-        else if(self.direction)
-            [self setContentOffset:CGPointMake(0, self.headerHeight) animated:YES];
-        else
-            [self setContentOffset:CGPointMake(0, 0) animated:YES];
-    }
+    [self.containerView MCScrollViewDidEndDecelerating:scrollView];
 }
-
-- (void)MCScrollViewDidEndDecelerating:(UIScrollView*)scrollView
-{
-    if(self.direction || self.contentOffset.y == self.headerHeight)
-        [self setContentOffset:CGPointMake(0, self.headerHeight) animated:YES];
-    else
-        [self setContentOffset:CGPointMake(0, 0) animated:YES];
-}
-
-
-#pragma mark - UITableViewDataSource
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 0;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return nil;
-}
-
-#pragma mark - UITableViewDelegate
-
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    return self.tableSection;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    CGFloat sectionHeight = 40.f;
-    if ([self.delegateHeader respondsToSelector:@selector(MCHeadTableViewSectionView)]) {
-        self.tableSection = [self.delegateHeader MCHeadTableViewSectionView];
-        sectionHeight = self.tableSection.frame.size.height;
-        self.tableviewContent.frame = CGRectMake(0.f, 0.f, self.bounds.size.width, self.bounds.size.height-sectionHeight);
-    }
-    [self reloadData];
-    return sectionHeight;
-}
-
-@end
-
-/*
- table header view
- */
-
-@implementation tableHeaderView
-
-- (UIView*)hitTest:(CGPoint)point withEvent:(UIEvent*)event
-{
-    return [self.contentTableView hitTest:point withEvent:event];
-}
+ 
+ **********************************************************************/
 
 @end

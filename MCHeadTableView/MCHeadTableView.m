@@ -1,11 +1,3 @@
-//
-//  MCHeadTableView.m
-//  MCHeadTableView
-//
-//  Created by Vic Zhou on 5/6/13.
-//  Copyright (c) 2013 Vic. All rights reserved.
-//
-
 #import "MCHeadTableView.h"
 #import "MCContentTableView.h"
 

@@ -33,13 +33,6 @@
     return _tableviewContent;
 }
 
-- (void)reloadData {
-    if ([self.delegateHeader respondsToSelector:@selector(MCHeadTableViewFooterView)]) {
-        MCContentTableView *view = [self.delegateHeader MCHeadTableViewFooterView];
-        self.tableviewContent = view;
-    }
-}
-
 #pragma mark - Set Value
 
 - (void)setDelegateHeader:(id<MCHeadTableViewDelegate>)delegateHeader {
@@ -72,6 +65,7 @@
     self.dataSource = self;
     self.delegate = self;
     self.scrollEnabled = NO;
+    [self MCReloadData];
 }
 
 #pragma mark - Actions Private
@@ -79,6 +73,12 @@
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
 {
     CGPoint newPoint = [[change valueForKey:NSKeyValueChangeNewKey] CGPointValue];
+    CGPoint oldPoint = [[change valueForKey:NSKeyValueChangeOldKey] CGPointValue];
+    
+    if(oldPoint.y > newPoint.y)
+        self.direction = YES;
+    else
+        self.direction = NO;
     
     if(self.contentOffset.y < self.headerHeight)
     {
@@ -135,6 +135,14 @@
 }
 
 
+- (void)MCReloadData {
+    if ([self.delegateHeader respondsToSelector:@selector(MCHeadTableViewFooterView)]) {
+        MCContentTableView *view = [self.delegateHeader MCHeadTableViewFooterView];
+        self.tableviewContent = view;
+        self.tableFooterView = view;
+    }
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -162,7 +170,6 @@
         sectionHeight = self.tableSection.frame.size.height;
         self.tableviewContent.frame = CGRectMake(0.f, 0.f, self.bounds.size.width, self.bounds.size.height-sectionHeight);
     }
-    [self reloadData];
     return sectionHeight;
 }
 

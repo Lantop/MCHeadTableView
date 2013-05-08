@@ -1,7 +1,7 @@
 //
 //  MCContentTableView.m
 //  MCemo
-//  
+//
 //  Created by Vic Zhou on 5/8/13.
 //  Copyright (c) 2013 Vic Zhou. All rights reserved.
 //
@@ -12,8 +12,6 @@
 static NSString *const keyPath = @"contentOffset";
 
 @interface MCContentTableView ()
-
-@property (nonatomic, strong) MCHeadTableView *containerView;
 
 @end
 
@@ -26,28 +24,28 @@ static NSString *const keyPath = @"contentOffset";
         self.containerView = (MCHeadTableView*)containerView;
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [self addObserver:self.containerView forKeyPath:keyPath
-                               options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld)
-                               context:NULL];
+                  options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld)
+                  context:NULL];
     }
     return self;
 }
 
 - (void)dealloc {
-    [self removeObserver:self forKeyPath:keyPath ];
+    [self removeObserver:self.containerView forKeyPath:keyPath ];
 }
 
 /*********** add the method below to your contentview *******************
-#pragma mark - UIScrollViewDelegate
-
-- (void)scrollViewDidEndDragging:(UIScrollView*)scrollView willDecelerate:(BOOL)decelerate
-{
-    [self.containerView MCScrollViewDidEndDragging:scrollView willDecelerate:decelerate];
-}
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView*)scrollView
-{
-    [self.containerView MCScrollViewDidEndDecelerating:scrollView];
-}
+ #pragma mark - UIScrollViewDelegate
+ 
+ - (void)scrollViewDidEndDragging:(UIScrollView*)scrollView willDecelerate:(BOOL)decelerate
+ {
+ [self.containerView MCScrollViewDidEndDragging:scrollView willDecelerate:decelerate];
+ }
+ 
+ - (void)scrollViewDidEndDecelerating:(UIScrollView*)scrollView
+ {
+ [self.containerView MCScrollViewDidEndDecelerating:scrollView];
+ }
  
  **********************************************************************/
 

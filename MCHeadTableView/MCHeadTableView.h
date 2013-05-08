@@ -28,6 +28,8 @@
 
 - (void)MCScrollViewDidEndDecelerating:(UIScrollView*)scrollView;
 
+- (void)MCReloadData;
+
 @end
 
 /*

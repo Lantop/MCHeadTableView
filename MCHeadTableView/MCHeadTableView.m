@@ -136,6 +136,7 @@
 
 
 - (void)MCReloadData {
+    [self reloadData];
     if ([self.delegateHeader respondsToSelector:@selector(MCHeadTableViewFooterView)]) {
         MCContentTableView *view = [self.delegateHeader MCHeadTableViewFooterView];
         self.tableviewContent = view;

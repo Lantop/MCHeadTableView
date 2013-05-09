@@ -160,16 +160,21 @@
 #pragma mark - UITableViewDelegate
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    if (!self.tableSection) {
+        if ([self.delegateHeader respondsToSelector:@selector(MCHeadTableViewSectionView)]) {
+            self.tableSection = [self.delegateHeader MCHeadTableViewSectionView];
+        }
+    }
+    
     return self.tableSection;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    CGFloat sectionHeight = 40.f;
-    if ([self.delegateHeader respondsToSelector:@selector(MCHeadTableViewSectionView)]) {
-        self.tableSection = [self.delegateHeader MCHeadTableViewSectionView];
-        sectionHeight = self.tableSection.frame.size.height;
-        self.tableFooterView.frame = CGRectMake(0.f, 0.f, self.bounds.size.width, self.bounds.size.height-sectionHeight);
+    CGFloat sectionHeight = 0;
+    if ([self.delegateHeader respondsToSelector:@selector(MCHeadTableViewSectionViewHeight)]) {
+        sectionHeight = [self.delegateHeader MCHeadTableViewSectionViewHeight];
     }
+    self.tableFooterView.frame = CGRectMake(0.f, 0.f, self.bounds.size.width, self.bounds.size.height-sectionHeight);
     return sectionHeight;
 }
 

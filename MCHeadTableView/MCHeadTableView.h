@@ -14,6 +14,8 @@
 
 - (UIView*)MCHeadTableViewHeaderView;
 
+- (CGFloat)MCHeadTableViewSectionViewHeight;
+
 - (UIView*)MCHeadTableViewSectionView;
 
 - (MCContentTableView*)MCHeadTableViewFooterView;

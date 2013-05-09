@@ -168,7 +168,7 @@
     if ([self.delegateHeader respondsToSelector:@selector(MCHeadTableViewSectionView)]) {
         self.tableSection = [self.delegateHeader MCHeadTableViewSectionView];
         sectionHeight = self.tableSection.frame.size.height;
-        self.tableviewContent.frame = CGRectMake(0.f, 0.f, self.bounds.size.width, self.bounds.size.height-sectionHeight);
+        self.tableFooterView.frame = CGRectMake(0.f, 0.f, self.bounds.size.width, self.bounds.size.height-sectionHeight);
     }
     return sectionHeight;
 }

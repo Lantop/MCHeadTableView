@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MCRefreshTableView.h"
 @class MCHeadTableView;
 
-@interface MCContentTableView : UITableView <UITableViewDataSource, UITableViewDelegate>
+@interface MCContentTableView : MCRefreshTableView <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) MCHeadTableView *containerView;
 

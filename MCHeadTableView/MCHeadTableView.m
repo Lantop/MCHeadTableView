@@ -189,7 +189,11 @@
 
 - (UIView*)hitTest:(CGPoint)point withEvent:(UIEvent*)event
 {
-    return [self.contentTableView hitTest:point withEvent:event];
+    if (point.x > 95.f && point.x < 150.f && point.y > 50.f && point.y < 80.f) {
+        return [super hitTest:point withEvent:event];
+    }else {
+        return [self.contentTableView hitTest:point withEvent:event];
+    }
 }
 
 @end
